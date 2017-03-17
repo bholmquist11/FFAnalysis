@@ -22,7 +22,7 @@ teamsList = [
     'PHI', 'TB', 'ATL', 'MIN', 'TEN', 'CIN', 'NYJ', 'OAK', 'NO',
     'SD', 'KC', 'MIA', 'SEA', 'NYG', 'DAL', 'DET', 'IND', 'NE',
     'ARI', 'PIT', 'WAS', 'LA', 'SF'
-    ]
+]
 
 global teams
 teams = {}
@@ -70,4 +70,4 @@ for i in range(256):
     scheduleDT[i] = [seasonSchedule['fullgameschedule']['gameentry'][i][
         'awayTeam']['Abbreviation'], seasonSchedule['fullgameschedule'][
         'gameentry'][i]['homeTeam']['Abbreviation']
-        ], datetime.strptime(scheduleDT[i][2], '%Y%m%d')
+    ], datetime.strptime(scheduleDT[i][2], '%Y%m%d')
