@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang='en' lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <link rel='stylesheet' type='text/css' href='stylesMain.css'>
+    <title>Fantasy Football Toolbox</title>
+    <script src='src/view/wideReceiver.js'></script>
+    <script src='src/model/general.js'></script>
+    <script>
+        window.addEventListener('load', loadLocalStats)
+    </script>
+    <script>
+        window.addEventListener('load', buttonListener1)
+    </script>
+    <script>
+        window.addEventListener('load', buttonListener2)
+    </script>
+</head>
+
+
+<body>
+    <h1>Wide Receiver Comparison</h1>
+    <table id='formsAndStats' class='masterTable'>
+        <tr>
+            <td>
+                <form id='WRInput1'>
+                    <h2>WR Name 1:</h2>
+                    <input type="text" name="WRInputBox"><br>
+                    <button type='button' id="WRSubmit1">Submit</button><br><br>
+                </form>
+            </td>
+            <td>
+                <form id='WRInput2'>
+                    <h2>WR Name 2:</h2>
+                    <input type="text" name="WRInputBox"><br>
+                    <button type='button' id="WRSubmit2">Submit</button><br><br>
+                </form>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table id='WRStatsTable1' class='dataTable'>
+                    <thead>
+                        <tr>
+                            <th colspan='6' id='playerName1'></th>
+                        </tr>
+                        <tr>
+                            <th>Week</th>
+                            <th>Opponent</th>
+                            <th>Rec</th>
+                            <th>Targets</th>
+                            <th>Yards</th>
+                            <th>Rec TD</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </td>
+            <td>
+                <table id='WRStatsTable2' class='dataTable'>
+                    <thead>
+                        <tr>
+                            <th colspan='6' id='playerName2'></th>
+                        </tr>
+                        <th>Week</th>
+                        <th>Opponent</th>
+                        <th>Rec</th>
+                        <th>Targets</th>
+                        <th>Yards</th>
+                        <th>Rec TD</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </td>
+    <nav><a href="index.html">Return to Main Menu</a></nav>
+</body>
+</html>

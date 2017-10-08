@@ -1,0 +1,21 @@
+.dataTable th, .dataTable td, .dataTable {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 5px;
+    text-align: center;
+}
+
+.masterTable{
+    border: none;
+    text-align: left;
+    padding: 20px;
+}
+
+.inlineForms {
+    float: left;
+}
+
+
+.inlineTable {
+    float: left;
+}

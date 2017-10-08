@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang='en' lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <link rel='stylesheet' type='text/css' href='stylesMain.css'>
+    <title>Fantasy Football Toolbox</title>
+    <script src='src/view/wideReceiver.js'></script>
+    <script src='src/model/general.js'></script>
+    <script>
+        window.addEventListener('load', buttonListener)
+    </script>
+    <script>
+        window.addEventListener('load', loadLocalStats)
+    </script>
+</head>
+<body>
+    <h1>Wide Receiver Comparison</h1>
+    <form name='WRInput'>
+        <h2>WR Name 1:</h2>
+        <input type="text" name="WRInputBox"><br>
+        <button type='button' name="WRSubmit">Submit</button><br><br>
+        <nav><a href="index.html">Return to Main Menu</a></nav>
+    </form>
+    <table id='WRStatsTable' style='width:30%'>
+        <thead>
+            <th>Week</th>
+            <th>Rush</th>
+            <th>Yds</th>
+            <th>YPC</th>
+            <th>Rush TD</th>
+            <th>Rec</th>
+            <th>Targets</th>
+            <th>Yards</th>
+            <th>Rec TD</th>
+        </thead>
+        <tbody></tbody>
+    </table>
+</body>
+</html>
