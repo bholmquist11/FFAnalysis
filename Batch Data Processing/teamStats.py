@@ -1,5 +1,6 @@
 import pastStats
 import schedule
+import dataFunctions
 
 from datetime import datetime
 import dateutil
@@ -31,7 +32,7 @@ def callGame(homeTeam, awayTeam, date):
     payload = {
         'gameid': date + '-' + awayTeam + '-' + homeTeam
     }
-    gameStats = pastStats.apiGet(endpoint, payload)
+    gameStats = dataFunctions.apiGet(endpoint, payload)
     return gameStats
 
 
@@ -44,7 +45,22 @@ def callGame(homeTeam, awayTeam, date):
 
 
 def extractStats(gameStats):
-    homeTeam = gameStats[_____]
-    awayTeam = gameStats[_____]
-    date = gameStats[date]
-    teams[homeTeam][date]
+    homeTeam = gameStats['gameboxscore']['game']['homeTeam']['Abbreviation']
+    homeTeamStats = gameStats['gameboxscore']['homeTeam']['homeTeamStats']
+    awayTeam = gameStats['gameboxscore']['game']['awayTeam']['Abbreviation']
+    awayTeamStats = gameStats['gameboxscore']['awayTeam']['awayTeamStats']
+    date = gameStats['gameboxscore']['game']['date'].replace('-', '')
+    teams[homeTeam][date] = {
+        'RYA': awayTeamStats['RushYards']['#text']
+        'RTDA': awayTeamStats['RushTD']['#text']
+        'PYA': awayTeamStats['PassGrossYards']['#text']
+        'PTDA': awayTeamStats['PassTD']['#text']
+        'GrossYA': awayTeamStats['OffenseYds']['#text']
+    }
+    teams[awayTeam][date] = {
+        'RYA': homeTeamStats['RushYards']['#text']
+        'RTDA': homeTeamStats['RushTD']['#text']
+        'PYA': homeTeamStats['PassGrossYards']['#text']
+        'PTDA': homeTeamStats['PassTD']['#text']
+        'GrossYA': homeTeamStats['OffenseYds']['#text']
+    }

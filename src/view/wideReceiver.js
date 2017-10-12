@@ -27,20 +27,23 @@ function loadLocalStats() {
 function displayHandoff1() {
     formId = 'WRInput1';
     tableId = 'WRStatsTable1';
-    displayStats(formId, tableId)
+    playerId = 'playerName1';
+    console.log
+    displayStats(formId, tableId, playerId)
 }
 
 
 function displayHandoff2() {
     formId = 'WRInput2';
     tableId = 'WRStatsTable2';
-    displayStats(formId, tableId)
+    playerId = 'playerName2';
+    displayStats(formId, tableId, playerId)
 }
 
 
-function displayStats(formId, tableId) {
+function displayStats(formId, tableId, playerId) {
     retrieveStats(formId);  // returns singlePlayerStats
-    document.getElementById('playerName1').innerHTML = WRName
+    document.getElementById(playerId).innerHTML = WRName
     table = document.getElementById(tableId);
     oldBodyRows = table.childNodes[3];
     emptyBodyRows = document.createElement('tbody')

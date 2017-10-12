@@ -139,3 +139,24 @@ def getAllReceiverStats(playerSetStart, playerSetEnd):
         name = player[0]
         team = player[1]
         getReceiverStats(name, team, gameDates)
+
+
+def getRunningBackStats(playerName, team, gameDates):
+    if playerName not in playerStats['RB']:
+        print(playerName, 'not found in playerStats')
+        playerStats['RB'][playerName] = {}
+    for date in gameDates:
+        week = schedule.datesToWeek(date)
+        # If they played on this date and we don't have it in local playerStats
+        if team in gameDates[date]:
+            if week not in playerStats['RB'][playerName]:
+                print(week, 'not found in', playerName, 'stats')
+                reducedWeeklyStats(date, playerName, team)
+
+
+def getAllRunningBackStats(playerSetStart, playerSetEnd):
+    playerNames = getNamesFromRoster('RB')
+    for player in playerNames[playerSetStart:playerSetEnd]:
+        name = player[0]
+        team = player[1]
+        getReceiverStats(name, team, gameDates)
