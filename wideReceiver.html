@@ -7,7 +7,10 @@
     <script src='src/view/wideReceiver.js'></script>
     <script src='src/model/general.js'></script>
     <script>
-        window.addEventListener('load', loadLocalStats)
+        window.addEventListener('load', loadLocalPlayerStats)
+    </script>
+    <script>
+        window.addEventListener('load', loadLocalTeamStats)
     </script>
     <script>
         window.addEventListener('load', buttonListener1)
@@ -72,6 +75,43 @@
                     <tbody></tbody>
                 </table>
             </td>
+        </tr>
+        <tr>
+            <td>
+                <table id='WROpponentTable1' class='dataTableFuture'>
+                    <tr>
+                        <th colspan='8'>Upcoming Opponents</th>
+                    </tr>
+                    <tr>
+                        <th>Week</th>
+                        <th>Opponent</th>
+                        <th>PYA</th>
+                        <th>Rank</th>
+                        <th>PTDA</th>
+                        <th>Rank</th>
+                        <th>Gross YA</th>
+                        <th>Rank</th>
+                    </tr>
+                </table>
+            </td>
+            <td>
+                <table id='WROpponentTable2' class='dataTableFuture'>
+                    <tr>
+                        <th colspan='8'>Upcoming Opponents</th>
+                    </tr>
+                    <tr>
+                        <th>Week</th>
+                        <th>Opponent</th>
+                        <th>PYA</th>
+                        <th>Rank</th>
+                        <th>PTDA</th>
+                        <th>Rank</th>
+                        <th>Gross YA</th>
+                        <th>Rank</th>
+                    </tr>
+                </table>
+            </td>
+        </tr>
     <nav><a href="index.html">Return to Main Menu</a></nav>
 </body>
 </html>

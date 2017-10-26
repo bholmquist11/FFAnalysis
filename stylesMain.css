@@ -5,6 +5,13 @@
     text-align: center;
 }
 
+.dataTableFuture th, .dataTableFuture td, .dataTableFuture {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 5px;
+    text-align: center;
+}
+
 .masterTable{
     border: none;
     text-align: left;

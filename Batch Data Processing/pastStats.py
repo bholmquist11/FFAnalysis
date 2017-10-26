@@ -1,5 +1,4 @@
 import requests
-import dataFunctions
 import datetime
 from datetime import datetime
 import dateutil
@@ -8,7 +7,10 @@ import math
 import json
 from pprint import pprint
 from datetime import datetime, timedelta
+import time
 import schedule
+import dataFunctions
+
 
 # INPUTS
 season = '2017-2018-regular'
@@ -123,7 +125,7 @@ def reducedWeeklyStats(date, playerName, team):
 def getReceiverStats(playerName, team, gameDates):
     if playerName not in playerStats['WR']:
         print(playerName, 'not found in playerStats')
-        playerStats['WR'][playerName] = {}
+        playerStats['WR'][playerName] = {'Team': team}
     for date in gameDates:
         week = schedule.datesToWeek(date)
         # If they played on this date and we don't have it in local playerStats
@@ -136,9 +138,12 @@ def getReceiverStats(playerName, team, gameDates):
 def getAllReceiverStats(playerSetStart, playerSetEnd):
     playerNames = getNamesFromRoster('WR')
     for player in playerNames[playerSetStart:playerSetEnd]:
-        name = player[0]
-        team = player[1]
-        getReceiverStats(name, team, gameDates)
+        try:
+            name = player[0]
+            team = player[1]
+            getReceiverStats(name, team, gameDates)
+        except ValueError:
+            time.sleep(350)
 
 
 def getRunningBackStats(playerName, team, gameDates):

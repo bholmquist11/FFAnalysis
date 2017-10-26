@@ -6,14 +6,14 @@ season = '2017-2018-regular'
 
 
 def importLocalJSON(fileName):
-    with open('playerStats.txt') as infile:
-        localPlayerStats = json.load(infile)
-    return localPlayerStats
+    with open(fileName) as infile:
+        localStats = json.load(infile)
+    return localStats
 
 
-def exportLocalJSON(playerStats):
-    with open('playerStats.txt', 'w') as outfile:
-        json.dump(playerStats, outfile)
+def exportLocalJSON(stats, fileName):
+    with open(fileName, 'w') as outfile:
+        json.dump(stats, outfile)
 
 
 def apiGet(endpoint, payload={}):
