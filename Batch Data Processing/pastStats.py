@@ -19,6 +19,7 @@ startMonth = 9
 startDay = 8
 startDate = '20170907'
 now = datetime.now()
+# Local data imports
 try:
     playerStats = dataFunctions.importLocalJSON('playerStats.txt')
 except:
@@ -26,6 +27,11 @@ except:
         'WR': {},
         'RB': {}
     }
+try:
+    shitPlayers = dataFunctions.importLocalJSON('shitPlayers.txt')
+except:
+    shitPlayers = {}
+
 
 # Category names must match tag names from mySportsFeeds playerStats output
 weeklyCategories = {
@@ -38,6 +44,8 @@ weeklyCategories = {
     'RushTD': 0,
     'Receptions': 0
 }
+
+shitPlayers = {}
 
 
 def getRoster(positionAbbrev=''):
@@ -91,6 +99,72 @@ def pullGameDates():
 gameDates = pullGameDates()
 
 
+# RUN ALL RECEIVERS ================================
+
+
+def getAllReceiverStats(playerSetStart, playerSetEnd):
+    playerNames = getNamesFromRoster('WR')
+    for player in playerNames[playerSetStart:playerSetEnd]:
+        while True:  # will keep repeating until...
+            try:
+                name = player[0]
+                shitPlayers[name] = 0
+                team = player[1]
+                getReceiverStats(name, team, gameDates)
+                break
+            except ValueError:
+                print('Error in getAllReceiverStats; sleeping at',
+                      datetime.now().time())
+                time.sleep(126)
+
+
+def getReceiverStats(playerName, team, gameDates):
+    if playerName not in playerStats['WR']:
+        playerStats['WR'][playerName] = {'Team': team}
+    for week in schedule.weekNames:
+        try:
+            weeklyGameDate = schedule.opponentsByTeam[team][week]['Date']
+            weeklyGameDateDT = dateutil.parser.parse(weeklyGameDate)
+            if weeklyGameDateDT < now and \
+                    week not in playerStats['WR'][playerName] and \
+                    shitPlayers[playerName] < 3:
+                reducedWeeklyStats(weeklyGameDate, playerName, team)
+        except KeyError:
+            byeWeek(playerName, week)
+
+
+def reducedWeeklyStats(date, playerName, team):
+    week = schedule.datesToWeek(date)
+    try:
+        weekStats, date = getWeeklyPlayerStats(date, playerName)
+        weekStats = weekStats[
+            'dailyplayerstats']['playerstatsentry'][0]['stats']
+        print(date, 'returned stats')
+        weekStatsReduced = {}
+        # Pull stat for each category, build dictionary off it
+        for category in weeklyCategories:
+            stat = weekStats[category]['#text']
+            weekStatsReduced[category] = stat
+        weekStatsReduced['Game Date'] = date
+        weekStatsReduced['Opponent'] = schedule.gamesByDateWithOpponents[
+            date][team]
+        print('storing', week, 'for', playerName)
+        playerStats['WR'][playerName][week] = weekStatsReduced
+    except KeyError as e:
+        print(playerName, ',', date, 'returned no stats')
+        shitPlayers[playerName] += 1
+
+
+def byeWeek(playerName, week):
+    print(week, 'is a bye week!')
+    weekStatsReduced = {}
+    for category in weeklyCategories:
+        weekStatsReduced[category] = 'BYE'
+    weekStatsReduced['Game Date'] = 'BYE'
+    weekStatsReduced['Opponent'] = 'BYE'
+    playerStats['WR'][playerName][week] = weekStatsReduced
+
+
 def getWeeklyPlayerStats(date, playerName='', stats=[
         'Rec,Yds,TD,Tgt,Att,Avg']):
     payload = {
@@ -102,48 +176,7 @@ def getWeeklyPlayerStats(date, playerName='', stats=[
         'daily_player_stats.json', payload)
     return weeklyPlayerStats, date
 
-
-def reducedWeeklyStats(date, playerName, team):
-    week = schedule.datesToWeek(date)
-    try:
-        weekStats, date = getWeeklyPlayerStats(date, playerName)
-        weekStats = weekStats[
-            'dailyplayerstats']['playerstatsentry'][0]['stats']
-        weekStatsReduced = {}
-        # Pull stat for each category, build dictionary off it
-        for category in weeklyCategories:
-            stat = weekStats[category]['#text']
-            weekStatsReduced[category] = stat
-        weekStatsReduced['Game Date'] = date
-        weekStatsReduced['Opponent'] = schedule.gamesByDateWithOpponents[
-            date][team]
-        playerStats['WR'][playerName][week] = weekStatsReduced
-    except KeyError:
-        playerStats['WR'][playerName][week] = 'No stats this week'
-
-
-def getReceiverStats(playerName, team, gameDates):
-    if playerName not in playerStats['WR']:
-        print(playerName, 'not found in playerStats')
-        playerStats['WR'][playerName] = {'Team': team}
-    for date in gameDates:
-        week = schedule.datesToWeek(date)
-        # If they played on this date and we don't have it in local playerStats
-        if team in gameDates[date]:
-            if week not in playerStats['WR'][playerName]:
-                print(week, 'not found in', playerName, 'stats')
-                reducedWeeklyStats(date, playerName, team)
-
-
-def getAllReceiverStats(playerSetStart, playerSetEnd):
-    playerNames = getNamesFromRoster('WR')
-    for player in playerNames[playerSetStart:playerSetEnd]:
-        try:
-            name = player[0]
-            team = player[1]
-            getReceiverStats(name, team, gameDates)
-        except ValueError:
-            time.sleep(350)
+# GET RB STATS ============================================
 
 
 def getRunningBackStats(playerName, team, gameDates):

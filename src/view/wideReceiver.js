@@ -1,5 +1,6 @@
 serverURLPlayers = 'playerStats.txt'
 serverURLTeams = 'teamStats.txt'
+serverURLOpponents = 'opponentsByTeam.txt'
 weekList = ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6',
             'Week 7', 'Week 8', 'Week 9', 'Week 10', 'Week 11',
             'Week 12', 'Week 13', 'Week 14', 'Week 15', 'Week 16', 'Week 17']
@@ -8,18 +9,27 @@ weekList = ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6',
 function loadLocalPlayerStats() {
     get(serverURLPlayers, function(response) {
         rawStats = response;
-        parsedPlayerStats = JSON.parse(rawStats)
+        playerStats = JSON.parse(rawStats);
     });
-    console.log('loaded')
+    console.log('loaded playerStats');
 }
 
 
 function loadLocalTeamStats() {
     get(serverURLTeams, function(response) {
-        teamStats = response;
-        parsedTeamStats = JSON.parse(teamStats)
+        rawStats = response;
+        teamStats = JSON.parse(rawStats);
     });
-    console.log('loaded')
+    console.log('loaded teamStats');
+}
+
+
+function loadLocalOpponents() {
+    get(serverURLOpponents, function(response) {
+        rawStats = response;
+        opponentsByTeam = JSON.parse(rawStats);
+    });
+    console.log('loaded opponenets');
 }
 
 
@@ -49,7 +59,7 @@ function displayHandoff1() {
     opponentStatsTableId = 'WROpponentTable1';
     playerNameHeadingId = 'playerName1';
     displayPlayerStats(playerName, pastStatsTableId, playerNameHeadingId);
-    // displayOpponentStats()
+    displayOpponentStats(playerName, opponentStatsTableId)
 }
 
 
@@ -60,26 +70,24 @@ function displayHandoff2() {
     opponentStatsTableId = 'WROpponentTable2'
     playerNameHeadingId = 'playerName2';
     displayPlayerStats(playerName, pastStatsTableId, playerNameHeadingId);
+    displayOpponentStats(playerName, opponentStatsTableId)
 }
 
 
 function displayPlayerStats(playerName, pastStatsTableId, playerNameHeadingId) {
     singlePlayerStats = retrieveStats(playerName);
-    nameHeadingHTML = document.getElementById(playerNameHeadingId).innerHTML
-    nameHeadingHTML = playerName
+    document.getElementById(playerNameHeadingId).innerHTML = playerName
     table = document.getElementById(pastStatsTableId);
     oldBodyRows = table.childNodes[3];
     emptyBodyRows = document.createElement('tbody')
     table.replaceChild(emptyBodyRows, oldBodyRows)
-    numWeeks = Object.keys(singlePlayerStats[0]).length
-    for (week in weekList.slice(0, numWeeks+1)) {
-        console.log(weekList[week])
+    numWeeks = Object.keys(singlePlayerStats[0]).length - 1
+    for (week in weekList.slice(0, numWeeks)) {
         if (weekList[week] in singlePlayerStats[0]) {
             weekStats = singlePlayerStats[0][weekList[week]];
-            console.log(weekStats)
             row = emptyBodyRows.insertRow();
             row.insertCell(-1).textContent = weekList[week]
-            row.insertCell(-1).textContent = weekStats.Opponent // Need to handle bye weeks
+            row.insertCell(-1).textContent = weekStats.Opponent
             row.insertCell(-1).textContent = weekStats.Receptions
             row.insertCell(-1).textContent = weekStats.Targets
             row.insertCell(-1).textContent = weekStats.RecYards
@@ -93,29 +101,53 @@ function displayPlayerStats(playerName, pastStatsTableId, playerNameHeadingId) {
 
 
 function retrieveStats(playerName) {
-    var singlePlayerStats = parsedPlayerStats.WR[playerName]
+    var singlePlayerStats = playerStats.WR[playerName]
     var team = singlePlayerStats['Team']
     return [singlePlayerStats, team]
 }
 
 
-function displayOpponentStats(nameInputFormId, pastStatsTableId, playerNameHeadingId) {
-    retrieveStats(nameInputFormId);  // returns singlePlayerStats
-    document.getElementById(playerNameHeadingId).innerHTML = WRName
-    table = document.getElementById(pastStatsTableId);
+function displayOpponentStats(playerName, opponentStatsTableId) {
+    table = document.getElementById(opponentStatsTableId);
     oldBodyRows = table.childNodes[3];
     emptyBodyRows = document.createElement('tbody')
     table.replaceChild(emptyBodyRows, oldBodyRows)
-    numWeeks = Object.keys(singlePlayerStats).length
-    for (week in weekList.slice(0, numWeeks)) {
-        weekStats = singlePlayerStats[weekList[week]];
-        row = emptyBodyRows.insertRow();
-        row.insertCell(-1).textContent = weekList[week]
-        row.insertCell(-1).textContent = weekStats.Opponent
-        row.insertCell(-1).textContent = weekStats.Receptions
-        row.insertCell(-1).textContent = weekStats.Targets
-        row.insertCell(-1).textContent = weekStats.RecYards
-        row.insertCell(-1).textContent = weekStats.RecTD
+
+    var singlePlayerStats = retrieveStats(playerName);
+    var playerStats = singlePlayerStats[0];
+    var playerTeam = singlePlayerStats[1];
+    var teamOpponents = opponentsByTeam[playerTeam]
+    var numWeeks = Object.keys(playerStats).length;
+    var remainingWeeks = weekList.slice(numWeeks, 17);
+    
+    // Insert league averages
+    row = emptyBodyRows.insertRow();
+    row.insertCell(-1).textContent = 'League'
+    row.insertCell(-1).textContent = ''
+    row.insertCell(-1).textContent = teamStats['league'].averages.GrossYA.average
+    row.insertCell(-1).textContent = ''
+    row.insertCell(-1).textContent = teamStats['league'].averages.PYA.average
+    row.insertCell(-1).textContent = ''
+    row.insertCell(-1).textContent = teamStats['league'].averages.PTDA.average
+    row.insertCell(-1).textContent = ''
+    
+    // Inert opponent averages
+    for (index in remainingWeeks) {
+        if (remainingWeeks[index] in teamOpponents)  {
+            var weeklyOpponent = teamOpponents[remainingWeeks[index]]['Opponent'];
+            row = emptyBodyRows.insertRow();
+            row.insertCell(-1).textContent = remainingWeeks[index]
+            row.insertCell(-1).textContent = weeklyOpponent
+            row.insertCell(-1).textContent = teamStats[weeklyOpponent].averages.GrossYA.average
+            row.insertCell(-1).textContent = 'RANK'
+            row.insertCell(-1).textContent = teamStats[weeklyOpponent].averages.PYA.average
+            row.insertCell(-1).textContent = 'RANK'
+            row.insertCell(-1).textContent = teamStats[weeklyOpponent].averages.PTDA.average
+            row.insertCell(-1).textContent = 'RANK'
+        } else {
+            row = emptyBodyRows.insertRow();
+            row.insertCell(-1).textContent = 'BYE'
+        }
     }
 }
 

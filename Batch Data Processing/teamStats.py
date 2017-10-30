@@ -7,6 +7,7 @@ import dateutil
 from dateutil.parser import parse
 from pprint import pprint
 import time
+import pdb
 
 
 schedule = schedule.getSchedule()
@@ -18,6 +19,29 @@ except:
 
 averages1 = ['RYA', 'RTDA', 'PYA', 'PTDA', 'GrossYA']
 # teamFields['averages'].update(averages)
+
+
+def loopGames():
+    for game in schedule['fullgameschedule']['gameentry']:
+        while True:
+            try:
+                homeTeam = game['homeTeam']['Abbreviation']
+                awayTeam = game['awayTeam']['Abbreviation']
+                date = game['date'].replace('-', '')
+                dateDT = dateutil.parser.parse(date)
+                addTeamsToDict(homeTeam, awayTeam)
+                if dateDT < datetime.now() and date not in teamStats[
+                        homeTeam]['games']:
+                    print('pulling stats and depositing', homeTeam, awayTeam)
+                    gameStats = callGame(homeTeam, awayTeam, date)
+                    extractStats(gameStats)  # Opens new key for game date
+                break
+            except ValueError as e:
+                print('error', e)
+                print('sleeping at', datetime.now().time())
+                pdb.set_trace()
+                time.sleep(301)
+    return teamStats
 
 
 def addTeamsToDict(homeTeam, awayTeam):
@@ -43,25 +67,6 @@ def addTeamsToDict(homeTeam, awayTeam):
             }
 
 
-def loopGames():
-    for game in schedule['fullgameschedule']['gameentry']:
-        try:
-            homeTeam = game['homeTeam']['Abbreviation']
-            awayTeam = game['awayTeam']['Abbreviation']
-            date = game['date'].replace('-', '')
-            dateDT = dateutil.parser.parse(date)
-            addTeamsToDict(homeTeam, awayTeam)
-            if dateDT < datetime.now() and date not in teamStats[
-                    homeTeam]['games']:
-                print('pulling stats and depositing', homeTeam, awayTeam)
-                gameStats = callGame(homeTeam, awayTeam, date)
-                extractStats(gameStats)  # Opens new key for game date
-        except ValueError:
-            time.sleep(350)
-
-# BROKEN IN LOOP GAMES WHERE YOU ARE PRINGTIN
-
-
 def callGame(homeTeam, awayTeam, date):
     endpoint = 'game_boxscore.json'
     payload = {
@@ -69,14 +74,6 @@ def callGame(homeTeam, awayTeam, date):
     }
     gameStats = dataFunctions.apiGet(endpoint, payload)
     return gameStats
-
-
-# teamStats = buildTeams()
-# gameDates = schedule.pullGameDates()
-# def runAllGames(teamStats, gameDates):
-#     for date in gameDates:
-#         for team in teamStats:
-#             gameStats = callGame(
 
 
 def extractStats(gameStats):
@@ -103,14 +100,53 @@ def extractStats(gameStats):
 
 def calculateAverages(teamStats):
     for team in teamStats:
-        team = teamStats[team]
-        gamesPlayed = len(team['games'])
-        pprint(team)
-        for game in team['games']:
-            game = team['games'][game]
-            for key in game:
-                team['averages'][key]['total'] = \
-                    team['averages'][key]['total'] + game[key]
-        for key in team['averages']:
-            team['averages'][key]['average'] = \
-                round(team['averages'][key]['total'] / gamesPlayed, 1)
+        if team != 'league':
+            teamDict = teamStats[team]
+
+            # Zero it from the imported file
+            for key in teamDict['averages']:
+                teamDict['averages'][key]['average'] = 0
+                teamDict['averages'][key]['total'] = 0
+
+            # Go through each game and tabulate averages
+            gamesPlayed = len(teamDict['games'])
+            for game in teamDict['games']:
+                game = teamDict['games'][game]
+                for key in game:
+                    teamDict['averages'][key]['total'] = \
+                        teamDict['averages'][key]['total'] + game[key]
+            for key in teamDict['averages']:
+                if 'TD' in key:
+                    teamDict['averages'][key]['average'] = \
+                        round(teamDict['averages'][key]['total']
+                              / gamesPlayed, 1)
+                else:
+                    teamDict['averages'][key]['average'] = \
+                        round(teamDict['averages'][key]['total']
+                              / gamesPlayed, 0)
+    calculateLeagueAverages()
+    return teamStats
+
+
+def calculateLeagueAverages():
+    teamStats['league'] = {
+        'averages': {}
+    }
+    for key in averages1:
+        teamStats['league']['averages'][key] = {
+            'average': 0,
+            'total': 0
+        }
+    for team in teamStats:
+        # Calculate totals
+        if team != 'league':
+            teamAverages = teamStats[team]['averages']
+            leagueAverages = teamStats['league']['averages']
+            for key in teamAverages:
+                stat = teamAverages[key]['average']
+                leagueAverages[key]['total'] = \
+                    round(leagueAverages[key]['total'], 1) + stat
+        # Calculate averages
+        for key in leagueAverages:
+            leagueAverages[key]['average'] = \
+                round(leagueAverages[key]['total']/32, 1)

@@ -15,6 +15,15 @@ def getSchedule():
 schedule = getSchedule()
 
 
+# Takes a date string ('20171008') and links it up to the week of the season
+def datesToWeek(date):
+    dateTime = dateutil.parser.parse(date)
+    for week in weeks:
+        if week[0] <= dateTime < week[1]:
+            weekName = week[2]
+    return weekName
+
+
 def pullGameDates():
     schedule = getSchedule()
     gameDates = {}  # The dates of every official game - will contain game info
@@ -76,15 +85,17 @@ def gamesByDateWithOpponents():
 gamesByDateWithOpponents = gamesByDateWithOpponents()
 
 
-# Takes a date string and links it up to the week of the season
-def datesToWeek(date):
-    dateTime = dateutil.parser.parse(date)
-    for week in weeks:
-        if week[0] <= dateTime < week[1]:
-            weekName = week[2]
-    return weekName
-
-
-def getSchedule():
-    schedule = dataFunctions.apiGet('full_game_schedule.json')
-    return schedule
+def opponentsByTeam():
+    opponentsByTeam = {}
+    for date in gamesByDateWithOpponents:
+        week = datesToWeek(date)
+        for team in gamesByDateWithOpponents[date]:
+            if team not in opponentsByTeam:
+                opponentsByTeam[team] = {}
+            teamsCurrentOpponent = gamesByDateWithOpponents[date][team]
+            opponentsByTeam[team][week] = {
+                'Opponent': teamsCurrentOpponent,
+                'Date': date
+            }
+    return opponentsByTeam
+opponentsByTeam = opponentsByTeam()
