@@ -47,7 +47,6 @@ def pullGameDates():
         else:
             pass
     return gameDates
-gameDates = pullGameDates()
 
 
 def buildWeeks():
@@ -58,7 +57,6 @@ def buildWeeks():
                 'Week ' + str(i+1))
         weeks.append(week)
     return weeks
-weeks = buildWeeks()
 
 
 def weekNamesOnly(weeks):
@@ -66,7 +64,6 @@ def weekNamesOnly(weeks):
     for week in weeks:
         weekNames.append(week[2])
     return weekNames
-weekNames = weekNamesOnly(weeks)
 
 
 def gamesByDateWithOpponents():
@@ -82,7 +79,6 @@ def gamesByDateWithOpponents():
             awayTeam: homeTeam
         })
     return gamesByDateWithOpponents
-gamesByDateWithOpponents = gamesByDateWithOpponents()
 
 
 def opponentsByTeam():
@@ -98,4 +94,9 @@ def opponentsByTeam():
                 'Date': date
             }
     return opponentsByTeam
+gameDates = pullGameDates()
+weeks = buildWeeks()
+weekNames = weekNamesOnly(weeks)
+currentWeek = datesToWeek(str(now))
+gamesByDateWithOpponents = gamesByDateWithOpponents()
 opponentsByTeam = opponentsByTeam()

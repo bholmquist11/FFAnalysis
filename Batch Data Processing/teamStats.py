@@ -10,11 +10,11 @@ import time
 import pdb
 
 
-schedule = schedule.getSchedule()
+scheduleOutput = schedule.getSchedule()
 try:
     teamStats = dataFunctions.importLocalJSON('teamStats.txt')
 except:
-    teamStats = {}
+    teamStats = {'league': {}}
 
 
 averages1 = ['RYA', 'RTDA', 'PYA', 'PTDA', 'GrossYA']
@@ -22,7 +22,7 @@ averages1 = ['RYA', 'RTDA', 'PYA', 'PTDA', 'GrossYA']
 
 
 def loopGames():
-    for game in schedule['fullgameschedule']['gameentry']:
+    for game in scheduleOutput['fullgameschedule']['gameentry']:
         while True:
             try:
                 homeTeam = game['homeTeam']['Abbreviation']
@@ -124,13 +124,22 @@ def calculateAverages(teamStats):
                     teamDict['averages'][key]['average'] = \
                         round(teamDict['averages'][key]['total']
                               / gamesPlayed, 0)
-    calculateLeagueAverages()
+            # We now have all averages. Let's sort them into rankings
+            rankings = statsListsByCategory(teamStats)
+            # Now, we want to go through each ranking category and dep
+            for category in rankings:
+                categoryEntries = rankings[category]
+                for statTuple in categoryEntries:
+                    rank = categoryEntries.index(statTuple) + 1
+                    team = statTuple[1]
+                    teamStats[team]['averages'][category]['rank'] = rank
     return teamStats
 
 
-def calculateLeagueAverages():
+def calculateLeagueAverages(teamStats):
     teamStats['league'] = {
-        'averages': {}
+        'averages': {},
+        'currentWeek': schedule.currentWeek
     }
     for key in averages1:
         teamStats['league']['averages'][key] = {
@@ -150,3 +159,19 @@ def calculateLeagueAverages():
         for key in leagueAverages:
             leagueAverages[key]['average'] = \
                 round(leagueAverages[key]['total']/32, 1)
+    return teamStats
+
+
+def statsListsByCategory(teamStatsComplete):
+    rankings = {}
+    for key in averages1:
+        rankings[key] = []
+    for team in teamStats:
+        if team != 'league':
+            teamAverages = teamStats[team]['averages']
+            for key in teamAverages:
+                stat = teamAverages[key]['average']
+                rankings[key].append((stat, team))
+    for key in rankings:
+        rankings[key] = sorted(rankings[key])
+    return rankings

@@ -81,8 +81,12 @@ function displayPlayerStats(playerName, pastStatsTableId, playerNameHeadingId) {
     oldBodyRows = table.childNodes[3];
     emptyBodyRows = document.createElement('tbody')
     table.replaceChild(emptyBodyRows, oldBodyRows)
-    numWeeks = Object.keys(singlePlayerStats[0]).length - 1
-    for (week in weekList.slice(0, numWeeks)) {
+
+    var currentWeek = teamStats.league.currentWeek
+    var currentWeekIndex = weekList.indexOf(currentWeek)
+    console.log(currentWeekIndex)
+
+    for (week in weekList.slice(0, currentWeekIndex+1)) {
         if (weekList[week] in singlePlayerStats[0]) {
             weekStats = singlePlayerStats[0][weekList[week]];
             row = emptyBodyRows.insertRow();
@@ -117,8 +121,11 @@ function displayOpponentStats(playerName, opponentStatsTableId) {
     var playerStats = singlePlayerStats[0];
     var playerTeam = singlePlayerStats[1];
     var teamOpponents = opponentsByTeam[playerTeam]
-    var numWeeks = Object.keys(playerStats).length;
-    var remainingWeeks = weekList.slice(numWeeks, 17);
+    var currentWeek = teamStats.league.currentWeek
+    var currentWeekIndex = weekList.indexOf(currentWeek)
+    console.log(currentWeekIndex)
+    var remainingWeeks = weekList.slice(currentWeekIndex+1, 17)
+    console.log(remainingWeeks)
     
     // Insert league averages
     row = emptyBodyRows.insertRow();
@@ -139,11 +146,11 @@ function displayOpponentStats(playerName, opponentStatsTableId) {
             row.insertCell(-1).textContent = remainingWeeks[index]
             row.insertCell(-1).textContent = weeklyOpponent
             row.insertCell(-1).textContent = teamStats[weeklyOpponent].averages.GrossYA.average
-            row.insertCell(-1).textContent = 'RANK'
+            row.insertCell(-1).textContent = teamStats[weeklyOpponent].averages.GrossYA.rank
             row.insertCell(-1).textContent = teamStats[weeklyOpponent].averages.PYA.average
-            row.insertCell(-1).textContent = 'RANK'
+            row.insertCell(-1).textContent = teamStats[weeklyOpponent].averages.PYA.rank
             row.insertCell(-1).textContent = teamStats[weeklyOpponent].averages.PTDA.average
-            row.insertCell(-1).textContent = 'RANK'
+            row.insertCell(-1).textContent = teamStats[weeklyOpponent].averages.PTDA.rank
         } else {
             row = emptyBodyRows.insertRow();
             row.insertCell(-1).textContent = 'BYE'

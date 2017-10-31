@@ -18,7 +18,7 @@ startYear = 2017
 startMonth = 9
 startDay = 8
 startDate = '20170907'
-now = datetime.now()
+now = datetime.now()    
 # Local data imports
 try:
     playerStats = dataFunctions.importLocalJSON('playerStats.txt')
