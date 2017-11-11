@@ -18,6 +18,12 @@
     padding: 20px;
 }
 
+.masterTableBordered{
+    border: 1px;
+    text-align: left;
+    padding: 20px;
+}
+
 .inlineForms {
     float: left;
 }

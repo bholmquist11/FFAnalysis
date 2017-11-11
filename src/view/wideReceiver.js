@@ -86,7 +86,7 @@ function displayPlayerStats(playerName, pastStatsTableId, playerNameHeadingId) {
     var currentWeekIndex = weekList.indexOf(currentWeek)
     console.log(currentWeekIndex)
 
-    for (week in weekList.slice(0, currentWeekIndex+1)) {
+    for (week in weekList.slice(0, currentWeekIndex)) {
         if (weekList[week] in singlePlayerStats[0]) {
             weekStats = singlePlayerStats[0][weekList[week]];
             row = emptyBodyRows.insertRow();
@@ -124,7 +124,7 @@ function displayOpponentStats(playerName, opponentStatsTableId) {
     var currentWeek = teamStats.league.currentWeek
     var currentWeekIndex = weekList.indexOf(currentWeek)
     console.log(currentWeekIndex)
-    var remainingWeeks = weekList.slice(currentWeekIndex+1, 17)
+    var remainingWeeks = weekList.slice(currentWeekIndex, 17)
     console.log(remainingWeeks)
     
     // Insert league averages

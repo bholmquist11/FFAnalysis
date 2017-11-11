@@ -32,26 +32,51 @@
 <body>
     <h1>Wide Receiver Comparison</h1>
     
-    <div class='container-fluid'>
+    <div class='container-fluid' id='useCase'>
         <div class='row'>
             <div class='col-sm'>
+                USE CASE 1: WHO TO ADD?
+            </div>
+            <div class='col-sm'>
+                USE CASE 2: WHO TO START?
+            </div>
+            <div class='col-sm'>
+                USE CASE 3: TRADES
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col-sm'>
+                Fill your bench with players who've seen increasing opportunities (targets) but haven't had big games yet.
+            </div>
+            <div class='col-sm'>
+                Besides recent fantasy totals, check quality of opponent and recent target totals.
+            </div>
+            <div class='col-sm'>
+                Always understand a player's remaining schedule before you trade. If they are facing many top ranked defenses, watch yo'self.
+            </div>
+        </div>
+    </div>
+    
+    <div class='container-fluid'>
+        <div class='row'>
+            <div class='col-sm-6'>
                 <form id='WRInput1' class='form-control'>
                     <h2>WR Name 1:</h2>
                     <input type="text" name="WRInputBox"><br>
-                    <button type='button' id="WRSubmit1" class='btn btn-default'>Submit</button>
+                    <button type='button' id="WRSubmit1" class='btn btn-primary'>Submit</button><br><br>
                 </form>
             </div>
-            <div class='col-sm'>
+            <div class='col-sm-6'>
                 <form class='form-control' id='WRInput2'>
                     <h2>WR Name 2:</h2>
                     <input type="text" name="WRInputBox"><br>
-                    <button type='button' id="WRSubmit2" class='btn btn-default'>Submit</button>
+                    <button type='button' id="WRSubmit2" class='btn btn-primary'>Submit</button><br><br>
                 </form>
             </div>
         </div>
         <div class='row'>
             <div class='col-sm'>
-                <table id='WRStatsTable1' class='table table-striped'>
+                <table id='WRStatsTable1' class='table'>
                     <thead>
                         <tr>
                             <th colspan='6' id='playerName1'></th>
@@ -72,7 +97,7 @@
                 </table>
             </div>
             <div class='col-sm'>
-                <table id='WRStatsTable2' class='table table-striped'>
+                <table id='WRStatsTable2' class='table'>
                     <thead>
                         <tr>
                             <th colspan='6' id='playerName2'></th>
@@ -95,7 +120,7 @@
         </div>
         <div class='row'>
             <div class='col-sm'>
-                <table id='WROpponentTable1' class='table table-striped'>
+                <table id='WROpponentTable1' class='table'>
                     <thead>
                         <tr>
                             <th colspan='8'>REMAINING SCHEDULE</th>
@@ -115,7 +140,7 @@
                 </table>
             </div>
             <div class='col-sm'>
-                <table id='WROpponentTable2' class='table table-striped'>
+                <table id='WROpponentTable2' class='table'>
                     <thead>
                         <tr>
                             <th colspan='8'>REMAINING SCHEDULE</th>

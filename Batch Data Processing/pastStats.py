@@ -45,8 +45,6 @@ weeklyCategories = {
     'Receptions': 0
 }
 
-shitPlayers = {}
-
 
 def getRoster(positionAbbrev=''):
     payload = {
