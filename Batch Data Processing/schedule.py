@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import dateutil
 from dateutil.parser import parse
 
-startDate = '20170907'
+startDate = '20170905'
 startDateTime = dateutil.parser.parse(startDate)
 now = datetime.now()
 

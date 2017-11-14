@@ -91,8 +91,6 @@ function displayPlayerStats(playerName, pastStatsTableId, scorecardTableId, play
     var playerStats = singlePlayerStats[0];
     var playerTeam = singlePlayerStats[1];
     var teamOpponents = opponentsByTeam[playerTeam]
-    var currentWeek = teamStats.league.currentWeek
-    var currentWeekIndex = weekList.indexOf(currentWeek)
     var remainingWeeks = weekList.slice(currentWeekIndex, 17)
 
     for (week in weekList.slice(0, currentWeekIndex)) {
@@ -113,10 +111,12 @@ function displayPlayerStats(playerName, pastStatsTableId, scorecardTableId, play
 
     row = emptyBodyRows.insertRow()
     row.style.fontWeight = 'bold'
+    // row.style.fontColor = 'white'
+    // row.setAttribute('bgcolor', '060606')
     cell = row.insertCell(-1)
     cell.textContent = 'REMAINING SCHEDULE'
     cell.colSpan = '8'
-    row = emptyBodyRows.insertRow()
+    row = emptyBodyRows.insertRow() 
     row.style.fontWeight = 'bold'
     row.insertCell(-1).textContent = 'Week'
     row.insertCell(-1).textContent = 'Opponent'
@@ -170,7 +170,9 @@ function rosRank(opponentRanks) {
     for (i=0; i<opponentRanks.length; i++) {
         ranksSum += opponentRanks[i]
     }
-    ranksAverage = ranksSum / opponentRanks.length
+    console.log(ranksSum)
+    ranksAverage = Math.round((ranksSum / opponentRanks.length)*10) / 10
+    console.log((ranksSum / opponentRanks.length))
     return ranksAverage
 }
 
