@@ -56,9 +56,9 @@ function displayHandoff1() {
     nameInputFormId = 'WRInput1';
     var playerName = pullName(nameInputFormId).replace(' ', '-');
     pastStatsTableId = 'WRStatsTable1';
-    opponentStatsTableId = 'WROpponentTable1';
+    scorecardTableId = 'scorecard1'
     playerNameHeadingId = 'playerName1';
-    displayPlayerStats(playerName, pastStatsTableId, playerNameHeadingId);
+    displayPlayerStats(playerName, pastStatsTableId, scorecardTableId, playerNameHeadingId);
 }
 
 
@@ -66,18 +66,24 @@ function displayHandoff2() {
     nameInputFormId = 'WRInput2';
     var playerName = pullName(nameInputFormId).replace(' ', '-');
     pastStatsTableId = 'WRStatsTable2';
-    opponentStatsTableId = 'WROpponentTable2';
+    scorecardTableId = 'scorecard2'
     playerNameHeadingId = 'playerName2';
-    displayPlayerStats(playerName, pastStatsTableId, playerNameHeadingId);
+    displayPlayerStats(playerName, pastStatsTableId, scorecardTableId, playerNameHeadingId);
 }
 
 
-function displayPlayerStats(playerName, pastStatsTableId, playerNameHeadingId) {
-    document.getElementById(playerNameHeadingId).innerHTML = playerName
-    table = document.getElementById(pastStatsTableId);
+function resetTable(tableId) {
+    table = document.getElementById(tableId)
     oldBodyRows = table.childNodes[3];
     emptyBodyRows = document.createElement('tbody')
     table.replaceChild(emptyBodyRows, oldBodyRows)
+    return emptyBodyRows
+}
+
+
+function displayPlayerStats(playerName, pastStatsTableId, scorecardTableId, playerNameHeadingId) {
+    document.getElementById(playerNameHeadingId).innerHTML = playerName
+    resetTable(pastStatsTableId)
 
     var currentWeek = teamStats.league.currentWeek
     var currentWeekIndex = weekList.indexOf(currentWeek)
@@ -132,6 +138,7 @@ function displayPlayerStats(playerName, pastStatsTableId, playerNameHeadingId) {
     row.insertCell(-1).textContent = ''
     row.insertCell(-1).textContent = teamStats['league'].averages.PTDA.average
     row.insertCell(-1).textContent = ''
+    opponentRanks = []
     for (index in remainingWeeks) {
         if (remainingWeeks[index] in teamOpponents)  {
             var weeklyOpponent = teamOpponents[remainingWeeks[index]]['Opponent'];
@@ -141,7 +148,11 @@ function displayPlayerStats(playerName, pastStatsTableId, playerNameHeadingId) {
             row.insertCell(-1).textContent = teamStats[weeklyOpponent].averages.GrossYA.average
             row.insertCell(-1).textContent = teamStats[weeklyOpponent].averages.GrossYA.rank
             row.insertCell(-1).textContent = teamStats[weeklyOpponent].averages.PYA.average
-            row.insertCell(-1).textContent = teamStats[weeklyOpponent].averages.PYA.rank
+            rankCell = row.insertCell(-1)
+            PYARank = teamStats[weeklyOpponent].averages.PYA.rank
+            opponentRanks.push(PYARank)
+            rankCell.textContent = PYARank
+            colorCells(PYARank, row)
             row.insertCell(-1).textContent = teamStats[weeklyOpponent].averages.PTDA.average
             row.insertCell(-1).textContent = teamStats[weeklyOpponent].averages.PTDA.rank
         } else {
@@ -149,6 +160,34 @@ function displayPlayerStats(playerName, pastStatsTableId, playerNameHeadingId) {
             row.insertCell(-1).textContent = 'BYE'
         }
     }
+    ranksAverage = rosRank(opponentRanks)
+    displayROSRank(ranksAverage, scorecardTableId)
+}
+
+
+function rosRank(opponentRanks) {
+    ranksSum = 0
+    for (i=0; i<opponentRanks.length; i++) {
+        ranksSum += opponentRanks[i]
+    }
+    ranksAverage = ranksSum / opponentRanks.length
+    return ranksAverage
+}
+
+
+function displayROSRank(ranksAverage, tableId) {
+    emptyBodyRows = resetTable(tableId)
+    row = emptyBodyRows.insertRow();
+    row.insertCell(-1).textContent = 'Easiness of Remaining Schedule (Higher is Better)'
+    row.insertCell(-1).textContent = ranksAverage
+}
+
+
+cellColors = ['ffcdd2', 'ffebee', 'fafafa', 'e8f5e9', 'c8e6c9']
+function colorCells(cellValue, row) {
+    adjValue = Math.round(cellValue/8, 0)
+    color = cellColors[adjValue]
+    row.setAttribute('bgcolor', color)
 }
 
 
