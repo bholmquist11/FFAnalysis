@@ -28,9 +28,8 @@ except:
         'RB': {}
     }
 try:
-    shitPlayers = dataFunctions.importLocalJSON('shitPlayers.txt')
+    print('loaded shit players')
 except:
-    shitPlayers = {}
 
 
 # Category names must match tag names from mySportsFeeds playerStats output
@@ -106,7 +105,6 @@ def getAllReceiverStats(playerSetStart, playerSetEnd):
         while True:  # will keep repeating until...
             try:
                 name = player[0]
-                shitPlayers[name] = 0
                 team = player[1]
                 getReceiverStats(name, team, gameDates)
                 break

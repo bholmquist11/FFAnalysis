@@ -2,6 +2,7 @@
 # Imports the most recent full data set from local
 import json
 import requests
+import os
 season = '2017-2018-regular'
 
 
@@ -12,6 +13,8 @@ def importLocalJSON(fileName):
 
 
 def exportLocalJSON(stats, fileName):
+    os.chdir(
+        'C:/Users/Ben/Google Drive/The Endeavors/Coding/GitHub/FFAnalysis')
     with open(fileName, 'w') as outfile:
         json.dump(stats, outfile)
 
